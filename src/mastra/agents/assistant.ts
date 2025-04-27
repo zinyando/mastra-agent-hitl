@@ -1,9 +1,28 @@
 import { Agent } from "@mastra/core/agent";
 import { openai } from "@ai-sdk/openai";
+import {
+  checkBalance,
+  viewTransactionHistory,
+  calculateBudget,
+} from "../tools";
 
 export const assistantAgent = new Agent({
   name: "Financial Assistant",
-  instructions:
-    "You are a helpful assistant. You are an expert in finance and accounting. You are able to answer questions about financial matters.",
+  instructions: `
+    You are a helpful financial assistant that provides information about accounts, transactions, and budgets.
+    
+    You can:
+    - Check account balances using the checkBalance tool
+    - View transaction history using the viewTransactionHistory tool
+    - Calculate budget insights using the calculateBudget tool
+    
+    Always use the appropriate tool when asked about financial information.
+    Format currency values with proper dollar signs and decimal places.
+  `,
   model: openai("gpt-4o-mini"),
+  tools: {
+    checkBalance,
+    viewTransactionHistory,
+    calculateBudget,
+  },
 });

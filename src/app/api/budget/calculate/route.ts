@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface BudgetAnalysis {
   month: number;
@@ -12,37 +12,55 @@ interface BudgetAnalysis {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const month = searchParams.get('month');
-    const year = searchParams.get('year');
+    const monthStr = searchParams.get("month");
+    const yearStr = searchParams.get("year");
 
-    if (!month || !year) {
+    if (!monthStr || !yearStr) {
       return NextResponse.json(
-        { error: 'Month and year are required parameters' },
+        { error: "Month and year are required parameters" },
+        { status: 400 }
+      );
+    }
+
+    const month = parseInt(monthStr);
+    const year = parseInt(yearStr);
+
+    if (isNaN(month) || month < 1 || month > 12) {
+      return NextResponse.json(
+        { error: "Month must be a number between 1 and 12" },
+        { status: 400 }
+      );
+    }
+
+    if (isNaN(year) || year < 2020) {
+      return NextResponse.json(
+        { error: "Year must be 2020 or later" },
         { status: 400 }
       );
     }
 
     // Mock budget analysis - replace with actual calculation logic
     const budgetAnalysis: BudgetAnalysis = {
-      month: parseInt(month),
-      year: parseInt(year),
+      month,
+      year,
       spendingByCategory: {
-        'Food': 500.00,
-        'Transportation': 200.00,
-        'Entertainment': 150.00,
-        'Utilities': 300.00
+        Food: 500.0,
+        Transportation: 200.0,
+        Entertainment: 150.0,
+        Utilities: 300.0,
       },
       recommendations: [
-        'Consider reducing entertainment spending',
-        'Food expenses are within budget',
-        'Transportation costs could be optimized'
-      ]
+        "Consider reducing entertainment spending",
+        "Food expenses are within budget",
+        "Transportation costs could be optimized",
+      ],
     };
 
     return NextResponse.json(budgetAnalysis);
   } catch (error) {
+    console.error("Budget calculation error:", error);
     return NextResponse.json(
-      { error: 'Failed to calculate budget insights' },
+      { error: "Failed to calculate budget insights" },
       { status: 500 }
     );
   }
