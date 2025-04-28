@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface CompletedBillPayment {
   id: string;
   previewId: string;
-  status: 'completed';
+  status: "completed";
   confirmationNumber: string;
   executedAt: string;
 }
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     if (!billPaymentPreviewId || !approvalToken) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
     const completedBillPayment: CompletedBillPayment = {
       id: Math.random().toString(36).substring(7),
       previewId: billPaymentPreviewId,
-      status: 'completed',
+      status: "completed",
       confirmationNumber: Math.random().toString(36).toUpperCase().substring(7),
-      executedAt: new Date().toISOString()
+      executedAt: new Date().toISOString(),
     };
 
     return NextResponse.json(completedBillPayment);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to execute bill payment' },
+      { error: "Failed to execute bill payment" },
       { status: 500 }
     );
   }

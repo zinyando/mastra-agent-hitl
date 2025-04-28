@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface BillPaymentPreview {
   id: string;
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     if (!billId || !accountId || !amount) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -28,15 +28,15 @@ export async function POST(request: NextRequest) {
       billId,
       accountId,
       amount,
-      payee: 'Mock Utility Company',
+      payee: "Mock Utility Company",
       dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return NextResponse.json(billPaymentPreview);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to create bill payment preview' },
+      { error: "Failed to create bill payment preview" },
       { status: 500 }
     );
   }

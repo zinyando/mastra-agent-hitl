@@ -57,8 +57,7 @@ export async function GET(request: NextRequest) {
     };
 
     return NextResponse.json(budgetAnalysis);
-  } catch (error) {
-    console.error("Budget calculation error:", error);
+  } catch {
     return NextResponse.json(
       { error: "Failed to calculate budget insights" },
       { status: 500 }

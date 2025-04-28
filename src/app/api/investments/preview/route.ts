@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface InvestmentPreview {
   id: string;
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     if (!accountId || !instrumentId || !amount) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -34,15 +34,15 @@ export async function POST(request: NextRequest) {
       projectedReturns: {
         oneYear: amount * 1.07, // Mock 7% annual return
         fiveYear: amount * Math.pow(1.07, 5),
-        tenYear: amount * Math.pow(1.07, 10)
+        tenYear: amount * Math.pow(1.07, 10),
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return NextResponse.json(investmentPreview);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to create investment preview' },
+      { error: "Failed to create investment preview" },
       { status: 500 }
     );
   }

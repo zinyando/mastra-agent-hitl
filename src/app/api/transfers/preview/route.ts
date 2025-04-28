@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface TransferPreview {
   id: string;
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     if (!fromAccountId || !toAccountId || !amount) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -28,15 +28,15 @@ export async function POST(request: NextRequest) {
       fromAccountId,
       toAccountId,
       amount,
-      description: description || '',
+      description: description || "",
       fees: amount * 0.01, // Mock 1% fee
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return NextResponse.json(transferPreview);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to create transfer preview' },
+      { error: "Failed to create transfer preview" },
       { status: 500 }
     );
   }

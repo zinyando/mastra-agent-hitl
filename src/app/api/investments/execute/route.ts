@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 interface CompletedInvestment {
   id: string;
   previewId: string;
-  status: 'completed';
+  status: "completed";
   confirmationNumber: string;
   executedAt: string;
 }
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     if (!investmentPreviewId || !approvalToken) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
     const completedInvestment: CompletedInvestment = {
       id: Math.random().toString(36).substring(7),
       previewId: investmentPreviewId,
-      status: 'completed',
+      status: "completed",
       confirmationNumber: Math.random().toString(36).toUpperCase().substring(7),
-      executedAt: new Date().toISOString()
+      executedAt: new Date().toISOString(),
     };
 
     return NextResponse.json(completedInvestment);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      { error: 'Failed to execute investment' },
+      { error: "Failed to execute investment" },
       { status: 500 }
     );
   }
