@@ -22,11 +22,21 @@ type InvestResult = {
   message?: string;
 };
 
-export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
-  toolName: "investMoney",
-  render: ({ args, status, result, addResult }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+type InvestMoneyComponentProps = {
+  args: InvestArgs;
+  status: { type: string };
+  result?: InvestResult;
+  addResult: (result: InvestResult) => void;
+};
+
+const InvestMoneyComponent = ({
+  args,
+  status,
+  result,
+  addResult,
+}: InvestMoneyComponentProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
     const handleConfirm = async () => {
       setIsLoading(true);
@@ -77,10 +87,12 @@ export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
           finalResult.message = `Investment of $${args.amount} in ${args.instrumentId} completed successfully. Confirmation: ${finalResult.confirmationNumber}`;
         }
         addResult(finalResult);
-      } catch (err: any) {
+      } catch (err: Error | unknown) {
         console.error("Investment process error:", err);
         setError(
-          err.message || "An unexpected error occurred during the investment."
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred during the investment."
         );
       } finally {
         setIsLoading(false);
@@ -128,5 +140,9 @@ export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
         </button>
       </div>
     );
-  },
+};
+
+export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
+  toolName: "investMoney",
+  render: (props) => <InvestMoneyComponent {...props} />,
 });

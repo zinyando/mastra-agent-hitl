@@ -21,14 +21,21 @@ type TransferResult = {
   message?: string;
 };
 
-export const TransferMoneyUI = makeAssistantToolUI<
-  TransferArgs,
-  TransferResult
->({
-  toolName: "transferMoney",
-  render: ({ args, status, result, addResult }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+type TransferMoneyComponentProps = {
+  args: TransferArgs;
+  status: { type: string };
+  result?: TransferResult;
+  addResult: (result: TransferResult) => void;
+};
+
+const TransferMoneyComponent = ({
+  args,
+  status,
+  result,
+  addResult,
+}: TransferMoneyComponentProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
     const handleConfirm = async () => {
       setIsLoading(true);
@@ -79,10 +86,12 @@ export const TransferMoneyUI = makeAssistantToolUI<
           finalResult.message = `Transfer of $${args.amount} completed successfully. Confirmation: ${finalResult.confirmationNumber}`;
         }
         addResult(finalResult);
-      } catch (err: any) {
+      } catch (err: Error | unknown) {
         console.error("Transfer process error:", err);
         setError(
-          err.message || "An unexpected error occurred during the transfer."
+          err instanceof Error
+            ? err.message
+            : "An unexpected error occurred during the transfer."
         );
       } finally {
         setIsLoading(false);
@@ -126,5 +135,9 @@ export const TransferMoneyUI = makeAssistantToolUI<
         </button>
       </div>
     );
-  },
+};
+
+export const TransferMoneyUI = makeAssistantToolUI<TransferArgs, TransferResult>({
+  toolName: "transferMoney",
+  render: (props) => <TransferMoneyComponent {...props} />,
 });
