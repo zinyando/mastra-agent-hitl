@@ -1,4 +1,5 @@
 import { makeAssistantToolUI } from "@assistant-ui/react";
+import { useState } from "react";
 
 type InvestArgs = {
   accountId: string;
@@ -8,42 +9,85 @@ type InvestArgs = {
   recurringFrequency?: "weekly" | "monthly" | "quarterly";
 };
 
+type InvestmentPreview = {
+  id: string;
+};
+
 type InvestResult = {
-  success: boolean;
-  transactionId: string;
-  message: string;
-  investmentDetails: {
-    instrumentName: string;
-    shares: number;
-    pricePerShare: number;
-  };
+  id: string;
+  previewId: string;
+  status: "completed";
+  confirmationNumber: string;
+  executedAt: string;
+  message?: string;
 };
 
 export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
   toolName: "investMoney",
   render: ({ args, status, result, addResult }) => {
-    const handleInvest = async () => {
-      try {
-        const baseUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-        const response = await fetch(`${baseUrl}/api/invest`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(args),
-        });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-        if (!response.ok) {
-          throw new Error("Investment failed");
+    const handleConfirm = async () => {
+      setIsLoading(true);
+      setError(null);
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+      try {
+        const previewResponse = await fetch(
+          `${baseUrl}/api/investments/preview`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(args),
+          }
+        );
+
+        if (!previewResponse.ok) {
+          const errorData = await previewResponse.json().catch(() => ({}));
+          throw new Error(
+            `Preview failed: ${errorData?.error || previewResponse.statusText}`
+          );
         }
 
-        const result = await response.json();
-        addResult(result);
-      } catch (error) {
-        console.error("Investment error:", error);
+        const previewResult: InvestmentPreview = await previewResponse.json();
+
+        const executeResponse = await fetch(
+          `${baseUrl}/api/investments/execute`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              investmentPreviewId: previewResult.id,
+              approvalToken: "mockApprovalToken",
+            }),
+          }
+        );
+
+        if (!executeResponse.ok) {
+          const errorData = await executeResponse.json().catch(() => ({}));
+          throw new Error(
+            `Execution failed: ${errorData?.error || executeResponse.statusText}`
+          );
+        }
+
+        const finalResult: InvestResult = await executeResponse.json();
+        if (!finalResult.message) {
+          finalResult.message = `Investment of $${args.amount} in ${args.instrumentId} completed successfully. Confirmation: ${finalResult.confirmationNumber}`;
+        }
+        addResult(finalResult);
+      } catch (err: any) {
+        console.error("Investment process error:", err);
+        setError(
+          err.message || "An unexpected error occurred during the investment."
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    if (status.type === "running") {
+    if (status.type === "running" || isLoading) {
       return (
         <div className="p-4 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-500">Processing investment...</p>
@@ -58,22 +102,8 @@ export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
             Investment Complete
           </h3>
           <p className="mt-2 text-sm text-gray-500">
-            Transaction ID: {result.transactionId}
+            Confirmation: {result.confirmationNumber}
           </p>
-          <div className="mt-2">
-            <h4 className="text-md font-medium text-gray-800">
-              Investment Details
-            </h4>
-            <p className="text-sm text-gray-500">
-              Instrument: {result.investmentDetails.instrumentName}
-            </p>
-            <p className="text-sm text-gray-500">
-              Shares: {result.investmentDetails.shares}
-            </p>
-            <p className="text-sm text-gray-500">
-              Price per Share: ${result.investmentDetails.pricePerShare}
-            </p>
-          </div>
           <p className="mt-1 text-sm text-gray-500">{result.message}</p>
         </div>
       );
@@ -88,11 +118,13 @@ export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
             args.recurringFrequency &&
             ` (${args.strategy} - ${args.recurringFrequency})`}
         </p>
+        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         <button
-          onClick={handleInvest}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={handleConfirm}
+          disabled={isLoading}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
         >
-          Confirm Investment
+          {isLoading ? "Processing..." : "Confirm Investment"}
         </button>
       </div>
     );
