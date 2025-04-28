@@ -51,10 +51,8 @@ const PayBillComponent = ({
   const handleConfirm = async () => {
     setIsLoading(true);
     setError(null);
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
     try {
-      const previewResponse = await fetch(`${baseUrl}/api/bills/preview`, {
+      const previewResponse = await fetch("/api/bills/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(args),
@@ -69,7 +67,7 @@ const PayBillComponent = ({
 
       const previewResult: BillPaymentPreview = await previewResponse.json();
 
-      const executeResponse = await fetch(`${baseUrl}/api/bills/execute`, {
+      const executeResponse = await fetch("/api/bills/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

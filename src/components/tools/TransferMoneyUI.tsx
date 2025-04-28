@@ -51,10 +51,8 @@ const TransferMoneyComponent = ({
   const handleConfirm = async () => {
     setIsLoading(true);
     setError(null);
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
     try {
-      const previewResponse = await fetch(`${baseUrl}/api/transfers/preview`, {
+      const previewResponse = await fetch("/api/transfers/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(args),
@@ -69,7 +67,7 @@ const TransferMoneyComponent = ({
 
       const previewResult: TransferPreview = await previewResponse.json();
 
-      const executeResponse = await fetch(`${baseUrl}/api/transfers/execute`, {
+      const executeResponse = await fetch("/api/transfers/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

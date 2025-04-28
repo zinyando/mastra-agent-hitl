@@ -52,12 +52,8 @@ const InvestMoneyComponent = ({
     const handleConfirm = async () => {
       setIsLoading(true);
       setError(null);
-      const baseUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
       try {
-        const previewResponse = await fetch(
-          `${baseUrl}/api/investments/preview`,
+        const previewResponse = await fetch("/api/investments/preview",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -74,8 +70,7 @@ const InvestMoneyComponent = ({
 
         const previewResult: InvestmentPreview = await previewResponse.json();
 
-        const executeResponse = await fetch(
-          `${baseUrl}/api/investments/execute`,
+        const executeResponse = await fetch("/api/investments/execute",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
