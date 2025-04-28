@@ -16,7 +16,27 @@ type PayBillResult = {
 
 export const PayBillUI = makeAssistantToolUI<PayBillArgs, PayBillResult>({
   toolName: "pay_bill",
-  render: ({ args, status, result }) => {
+  render: ({ args, status, result, addResult }) => {
+    const handlePayBill = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/pay-bill`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(args),
+        });
+
+        if (!response.ok) {
+          throw new Error("Bill payment failed");
+        }
+
+        const result = await response.json();
+        addResult(result);
+      } catch (error) {
+        console.error("Bill payment error:", error);
+      }
+    };
+
     if (status.type === "running") {
       return (
         <div className="p-4 bg-white rounded-lg shadow">
@@ -28,7 +48,7 @@ export const PayBillUI = makeAssistantToolUI<PayBillArgs, PayBillResult>({
     if (result) {
       return (
         <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">Bill Payment Complete</h3>
+          <h3 className="text-lg font-medium text-gray-900">Payment Complete</h3>
           <p className="mt-2 text-sm text-gray-500">Transaction ID: {result.transactionId}</p>
           {result.scheduledDate && (
             <p className="mt-1 text-sm text-gray-500">Scheduled for: {result.scheduledDate}</p>
@@ -37,6 +57,21 @@ export const PayBillUI = makeAssistantToolUI<PayBillArgs, PayBillResult>({
         </div>
       );
     }
+
+    return (
+      <div className="p-4 bg-white rounded-lg shadow">
+        <p className="text-sm text-gray-500">
+          Preparing to pay bill {args.billId} from account {args.accountId}
+          {args.amount && <span> (${args.amount})</span>}
+        </p>
+        <button
+          onClick={handlePayBill}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Confirm Payment
+        </button>
+      </div>
+    );
 
     return (
       <div className="p-4 bg-white rounded-lg shadow">

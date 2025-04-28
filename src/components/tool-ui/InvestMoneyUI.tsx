@@ -21,7 +21,27 @@ type InvestResult = {
 
 export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
   toolName: "invest_money",
-  render: ({ args, status, result }) => {
+  render: ({ args, status, result, addResult }) => {
+    const handleInvest = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/invest`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(args),
+        });
+
+        if (!response.ok) {
+          throw new Error("Investment failed");
+        }
+
+        const result = await response.json();
+        addResult(result);
+      } catch (error) {
+        console.error("Investment error:", error);
+      }
+    };
+
     if (status.type === "running") {
       return (
         <div className="p-4 bg-white rounded-lg shadow">
@@ -48,11 +68,16 @@ export const InvestMoneyUI = makeAssistantToolUI<InvestArgs, InvestResult>({
 
     return (
       <div className="p-4 bg-white rounded-lg shadow">
-        <h3 className="text-lg font-medium text-gray-900">Invest Money</h3>
-        <p className="mt-2 text-sm text-gray-500">
-          Investing {args?.amount} from account {args?.accountId} in {args?.instrumentId}
-          {args?.strategy === "recurring" && args?.recurringFrequency && ` (${args.strategy} - ${args.recurringFrequency})`}
+        <p className="text-sm text-gray-500">
+          Preparing to invest ${args.amount} from account {args.accountId} in {args.instrumentId}
+          {args.strategy === "recurring" && args.recurringFrequency && ` (${args.strategy} - ${args.recurringFrequency})`}
         </p>
+        <button
+          onClick={handleInvest}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Confirm Investment
+        </button>
       </div>
     );
   },
