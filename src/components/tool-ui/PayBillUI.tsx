@@ -15,7 +15,7 @@ type PayBillResult = {
 };
 
 export const PayBillUI = makeAssistantToolUI<PayBillArgs, PayBillResult>({
-  toolName: "pay_bill",
+  toolName: "payBill",
   render: ({ args, status, result, addResult }) => {
     const handlePayBill = async () => {
       try {

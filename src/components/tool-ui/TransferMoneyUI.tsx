@@ -13,12 +13,16 @@ type TransferResult = {
   message: string;
 };
 
-export const TransferMoneyUI = makeAssistantToolUI<TransferArgs, TransferResult>({
-  toolName: "transfer_money",
+export const TransferMoneyUI = makeAssistantToolUI<
+  TransferArgs,
+  TransferResult
+>({
+  toolName: "transferMoney",
   render: ({ args, status, result, addResult }) => {
     const handleTransfer = async () => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
         const response = await fetch(`${baseUrl}/api/transfer`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -47,8 +51,12 @@ export const TransferMoneyUI = makeAssistantToolUI<TransferArgs, TransferResult>
     if (result) {
       return (
         <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">Transfer Complete</h3>
-          <p className="mt-2 text-sm text-gray-500">Transaction ID: {result.transactionId}</p>
+          <h3 className="text-lg font-medium text-gray-900">
+            Transfer Complete
+          </h3>
+          <p className="mt-2 text-sm text-gray-500">
+            Transaction ID: {result.transactionId}
+          </p>
           <p className="mt-1 text-sm text-gray-500">{result.message}</p>
         </div>
       );
@@ -57,7 +65,8 @@ export const TransferMoneyUI = makeAssistantToolUI<TransferArgs, TransferResult>
     return (
       <div className="p-4 bg-white rounded-lg shadow">
         <p className="text-sm text-gray-500">
-          Preparing to transfer ${args.amount} from account {args.fromAccountId} to {args.toAccountId}
+          Preparing to transfer ${args.amount} from account {args.fromAccountId}{" "}
+          to {args.toAccountId}
         </p>
         <button
           onClick={handleTransfer}
