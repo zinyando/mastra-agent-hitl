@@ -11,7 +11,8 @@ interface Transaction {
 }
 
 const getTransactionHistory = async (params: URLSearchParams) => {
-  const response = await fetch(`/api/transactions?${params.toString()}`);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/transactions?${params.toString()}`);
   if (!response.ok) {
     throw new Error("Failed to fetch transactions");
   }

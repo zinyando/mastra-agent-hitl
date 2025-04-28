@@ -9,7 +9,8 @@ interface Account {
 }
 
 const getAccountBalances = async () => {
-  const response = await fetch("/api/accounts");
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const response = await fetch(`${baseUrl}/api/accounts`);
   if (!response.ok) {
     throw new Error("Failed to fetch account balances");
   }

@@ -12,12 +12,13 @@ interface BudgetAnalysis {
 
 const getBudgetAnalysis = async (month: number, year: number) => {
   try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     const params = new URLSearchParams({
       month: month.toString(),
       year: year.toString(),
     });
 
-    const response = await fetch(`/api/budget/calculate?${params.toString()}`);
+    const response = await fetch(`${baseUrl}/api/budget/calculate?${params.toString()}`);
     const data = await response.json();
 
     if (!response.ok) {
