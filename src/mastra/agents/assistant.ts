@@ -4,6 +4,9 @@ import {
   checkBalance,
   viewTransactionHistory,
   calculateBudget,
+  payBill,
+  transferMoney,
+  investMoney,
 } from "../tools";
 
 export const assistantAgent = new Agent({
@@ -15,6 +18,9 @@ export const assistantAgent = new Agent({
     - Check account balances using the checkBalance tool
     - View transaction history using the viewTransactionHistory tool
     - Calculate budget insights using the calculateBudget tool
+    - Pay bill using the payBill tool
+    - Transfer money using the transferMoney tool
+    - Invest money using the investMoney tool
     
     Always use the appropriate tool when asked about financial information.
     Format currency values with proper dollar signs and decimal places.
@@ -24,5 +30,8 @@ export const assistantAgent = new Agent({
     checkBalance,
     viewTransactionHistory,
     calculateBudget,
+    payBill,
+    transferMoney,
+    investMoney,
   },
 });
