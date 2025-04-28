@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This project demonstrates a financial assistant agent built with [Mastra](https://mastra.ai/) for the agent core and [Assistant UI](https://github.com/assistant-ui/assistant-ui) for the frontend React components, running on [Next.js](https://nextjs.org/) and bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+The agent provides a chat interface for financial operations (transfers, bills, investments) with built-in approval flows. Each operation requires explicit user confirmation through a dedicated UI component before execution, ensuring safety for sensitive financial transactions.
 
 ## Getting Started
 
