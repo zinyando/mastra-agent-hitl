@@ -85,26 +85,50 @@ const ThreadWelcome: FC = () => {
 
 const ThreadWelcomeSuggestions: FC = () => {
   return (
-    <div className="mt-3 flex w-full items-stretch justify-center gap-4">
+    <div className="mt-3 grid w-full max-w-4xl grid-cols-2 gap-4 px-4">
       <ThreadPrimitive.Suggestion
-        className="hover:bg-muted/80 flex max-w-sm grow basis-0 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in"
-        prompt="What is the weather in Tokyo?"
+        className="hover:bg-muted/80 flex h-24 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in hover:border-gray-300"
+        prompt="Pay my electricity bill of $50 from my Main account"
         method="replace"
         autoSend
       >
         <span className="line-clamp-2 text-ellipsis text-sm font-semibold">
-          What is the weather in Tokyo?
+          Pay a bill
         </span>
+        <span className="mt-1 text-xs text-gray-500">Try the bill payment tool</span>
       </ThreadPrimitive.Suggestion>
       <ThreadPrimitive.Suggestion
-        className="hover:bg-muted/80 flex max-w-sm grow basis-0 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in"
-        prompt="What is assistant-ui?"
+        className="hover:bg-muted/80 flex h-24 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in hover:border-gray-300"
+        prompt="Transfer $100 from my Savings account to my Checking account"
         method="replace"
         autoSend
       >
         <span className="line-clamp-2 text-ellipsis text-sm font-semibold">
-          What is assistant-ui?
+          Transfer money
         </span>
+        <span className="mt-1 text-xs text-gray-500">Try the money transfer tool</span>
+      </ThreadPrimitive.Suggestion>
+      <ThreadPrimitive.Suggestion
+        className="hover:bg-muted/80 flex h-24 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in hover:border-gray-300"
+        prompt="Invest $1000 in IBM shares from my Investment account"
+        method="replace"
+        autoSend
+      >
+        <span className="line-clamp-2 text-ellipsis text-sm font-semibold">
+          Invest in stocks
+        </span>
+        <span className="mt-1 text-xs text-gray-500">Try the investment tool</span>
+      </ThreadPrimitive.Suggestion>
+      <ThreadPrimitive.Suggestion
+        className="hover:bg-muted/80 flex h-24 flex-col items-center justify-center rounded-lg border p-3 transition-colors ease-in hover:border-gray-300"
+        prompt="Show me my recent transactions"
+        method="replace"
+        autoSend
+      >
+        <span className="line-clamp-2 text-ellipsis text-sm font-semibold">
+          View transactions
+        </span>
+        <span className="mt-1 text-xs text-gray-500">Check your account activity</span>
       </ThreadPrimitive.Suggestion>
     </div>
   );
