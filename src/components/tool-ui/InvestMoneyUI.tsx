@@ -163,16 +163,16 @@ const InvestMoneyComponent = ({
           <button
             onClick={handleConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md font-medium text-sm shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
           >
-            {isLoading ? "Processing..." : "Confirm Investment"}
+            Confirm Investment
           </button>
           <button
             onClick={handleReject}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+            className="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-md font-medium text-sm shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
           >
-            Reject
+            Cancel
           </button>
         </div>
       </div>
