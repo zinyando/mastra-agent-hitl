@@ -16,8 +16,8 @@ type InvestmentPreview = {
 type InvestResult = {
   id: string;
   previewId: string;
-  status: "completed";
-  confirmationNumber: string;
+  status: "completed" | "rejected";
+  confirmationNumber?: string;
   executedAt: string;
   message?: string;
 };
@@ -37,6 +37,17 @@ const InvestMoneyComponent = ({
 }: InvestMoneyComponentProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleReject = () => {
+    const finalResult: InvestResult = {
+      id: `rejected-${Date.now()}`,
+      previewId: "",
+      status: "rejected",
+      executedAt: new Date().toISOString(),
+      message: `Investment of $${args.amount} in ${args.instrumentId} was cancelled.`
+    };
+    addResult(finalResult);
+  };
 
     const handleConfirm = async () => {
       setIsLoading(true);
@@ -101,18 +112,35 @@ const InvestMoneyComponent = ({
 
     if (status.type === "running" || isLoading) {
       return (
-        <div className="p-4 bg-white rounded-lg shadow">
+        <div className="p-4 mb-6 mt-6 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-500">Processing investment...</p>
         </div>
       );
     }
 
     if (result) {
+      if (result.status === "rejected") {
+        return (
+        <div className="p-4 mb-6 mt-6 mx-4 bg-white rounded-lg shadow border border-red-200">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <h3 className="text-lg font-medium text-gray-900">Investment Cancelled</h3>
+            </div>
+            <p className="mt-2 text-sm text-gray-500">{result.message}</p>
+          </div>
+        );
+      }
+
       return (
-        <div className="p-4 bg-white rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">
-            Investment Complete
-          </h3>
+        <div className="p-4 mb-6 mt-6 bg-white rounded-lg shadow border border-green-200">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-900">Investment Complete</h3>
+          </div>
           <p className="mt-2 text-sm text-gray-500">
             Confirmation: {result.confirmationNumber}
           </p>
@@ -131,13 +159,22 @@ const InvestMoneyComponent = ({
             ` (${args.strategy} - ${args.recurringFrequency})`}
         </p>
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-        <button
-          onClick={handleConfirm}
-          disabled={isLoading}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          {isLoading ? "Processing..." : "Confirm Investment"}
-        </button>
+        <div className="mt-4 flex gap-4">
+          <button
+            onClick={handleConfirm}
+            disabled={isLoading}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+          >
+            {isLoading ? "Processing..." : "Confirm Investment"}
+          </button>
+          <button
+            onClick={handleReject}
+            disabled={isLoading}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+          >
+            Reject
+          </button>
+        </div>
       </div>
     );
 };
